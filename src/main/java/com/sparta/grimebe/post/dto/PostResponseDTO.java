@@ -21,19 +21,26 @@ public class PostResponseDTO {
 
     private String weather;
 
-    // private String username;
+    private boolean isLiked;
+
+    private String username;
 
     private LocalDateTime createdAt;
 
 //    private List<Comment> commentList;
 
     public PostResponseDTO(Post post) {
+        this.id = post.getId();
         this.title = post.getTitle();
         this.image = post.getImage();
         this.content = post.getContent();
         this.mood = post.getMood();
         this.weather = post.getMood();
-        // this.username = post.getusername;
+        this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
     }
+
+    // public void setLiked(boolean liked) {
+    //     isLiked = liked;
+    // }
 }
