@@ -1,13 +1,13 @@
 package com.sparta.grimebe.post.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 public class PostRequestDTO {
 
     private String title;
-
-    private String image;
 
     private String content;
 
