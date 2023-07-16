@@ -100,7 +100,7 @@ public class PostService {
             .orElseThrow(() -> new UserNotFoundException("회원을 찾을 수 없습니다."));
     }
 
-    private Post getPostById(Long postId) {
+    public Post getPostById(Long postId) {
         return postRepository.findById(postId)
             .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없습니다."));
     }
