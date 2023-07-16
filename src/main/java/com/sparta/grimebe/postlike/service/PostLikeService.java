@@ -29,10 +29,10 @@ public class PostLikeService {
     public void likePost(Long postId, UserDetailsImpl userDetails) {
         Post post = postService.getPostById(postId);
         User user = userDetails.getUser();
-        Optional<PostLike> optionalPostLike = postLikeRepository.findByUserIdAndPostId(user.getUser_id(), post.getId());
+        Optional<PostLike> optionalPostLike = postLikeRepository.findByUserIdAndPostId(user.getId(), post.getId());
 
         if (optionalPostLike.isPresent()) {
-            postLikeRepository.deleteByUserIdAndPostId(user.getUser_id(), post.getId());
+            postLikeRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
         } else {
             PostLike postLike = new PostLike(user, post);
             postLikeRepository.save(postLike);

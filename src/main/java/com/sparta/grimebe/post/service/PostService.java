@@ -50,7 +50,8 @@ public class PostService {
     @Transactional
     public PostResponseDTO createPost(PostRequestDTO postRequestDTO, MultipartFile image, UserDetailsImpl userDetails) {
         String filePath = imageStore.storeFile(image);
-        User user = getUserById(userDetails.getUser().getUser_id());
+        log.info("filePath = {}", filePath);
+        User user = getUserById(userDetails.getUser().getId());
         Post post = Post.builder()
             .title(postRequestDTO.getTitle())
             .content(postRequestDTO.getContent())
