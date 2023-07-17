@@ -1,14 +1,11 @@
 package com.sparta.grimebe.User.service;
 
 import com.sparta.grimebe.User.dto.SignupRequestDto;
+import com.sparta.grimebe.User.entity.User;
 import com.sparta.grimebe.User.entity.UserRoleEnum;
 import com.sparta.grimebe.User.jwt.JwtUtil;
 import com.sparta.grimebe.User.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
-
-import com.sparta.grimebe.User.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +33,4 @@ public class UserService {
 
         userRepository.save(user);
     }
-
 }
