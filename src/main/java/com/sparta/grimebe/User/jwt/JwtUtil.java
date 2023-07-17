@@ -2,6 +2,7 @@ package com.sparta.grimebe.User.jwt;
 
 
 import com.sparta.grimebe.User.entity.UserRoleEnum;
+import com.sparta.grimebe.User.filter.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -92,14 +93,18 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new JwtAuthenticationException("유효하지 않는 JWT 서명 입니다.",e);
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new JwtAuthenticationException("만료된 JWT 토큰 입니다.",e);
         } catch (UnsupportedJwtException e) {
             logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new JwtAuthenticationException("지원되지 않는 JWT 토큰 입니다.",e);
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new JwtAuthenticationException("잘못된 JWT 토큰 입니다.",e);
         }
-        return false;
+
     }
 
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기

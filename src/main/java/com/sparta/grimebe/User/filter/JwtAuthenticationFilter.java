@@ -69,6 +69,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        BaseResponseDTO responseBody = new BaseResponseDTO("로그인 실패", HttpStatus.BAD_REQUEST.value());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getWriter(),responseBody);
         log.info("로그인 실패");
         response.setStatus(401);
     }
