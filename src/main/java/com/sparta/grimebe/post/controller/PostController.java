@@ -2,12 +2,14 @@ package com.sparta.grimebe.post.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sparta.grimebe.User.security.UserDetailsImpl;
 import com.sparta.grimebe.global.BaseResponseDTO;
+import com.sparta.grimebe.post.dto.PagingDTO;
+import com.sparta.grimebe.post.dto.PagingParam;
+import com.sparta.grimebe.post.dto.PostListResponseDTO;
 import com.sparta.grimebe.post.dto.PostRequestDTO;
 import com.sparta.grimebe.post.dto.PostResponseDTO;
 import com.sparta.grimebe.post.service.PostService;
@@ -40,8 +45,9 @@ public class PostController {
         { @ApiResponse(responseCode = "200", description = "게시글 리스트 조회 성공"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @GetMapping("/post")
-    public ResponseEntity<List<PostResponseDTO>> getPosts() {
-        List<PostResponseDTO> response = postService.getPosts();
+    public ResponseEntity<PagingDTO<List<PostListResponseDTO>>> getPosts(@ModelAttribute PagingParam pagingParam, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Slice<PostListResponseDTO> result = postService.getPosts(pagingParam, userDetails);
+        PagingDTO<List<PostListResponseDTO>> response = new PagingDTO<>(result.hasNext(),result.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -50,8 +56,8 @@ public class PostController {
         { @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostResponseDTO> getPost(@PathVariable Long postId) {
-        PostResponseDTO response = postService.getPost(postId);
+    public ResponseEntity<PostResponseDTO> getPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostResponseDTO response = postService.getPost(postId, userDetails);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -1,9 +1,14 @@
 package com.sparta.grimebe.post.dto;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@Setter
 @Getter
 public class PostListResponseDTO {
+    // 게시글의 ID
     private Long id;
 
     private String title;
@@ -12,16 +17,20 @@ public class PostListResponseDTO {
 
     private String username;
 
-    private int commentCount;
+    private Long commentCount;
 
-    private int likeCount;
+    private Long likeCount;
 
-    public PostListResponseDTO(Long id, String title, String image, String username, int commentCount, int likeCount) {
+    private Boolean isLiked;
+
+    public PostListResponseDTO(Long id, String title, String image, String username, Long commentCount, Long likeCount,
+        Boolean isLiked) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.username = username;
         this.commentCount = commentCount;
         this.likeCount = likeCount;
+        this.isLiked = isLiked;
     }
 }

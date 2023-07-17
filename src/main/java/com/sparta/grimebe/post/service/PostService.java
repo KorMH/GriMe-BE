@@ -1,8 +1,8 @@
 package com.sparta.grimebe.post.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +13,11 @@ import com.sparta.grimebe.User.exception.UserNotFoundException;
 import com.sparta.grimebe.User.repository.UserRepository;
 import com.sparta.grimebe.User.security.UserDetailsImpl;
 import com.sparta.grimebe.global.BaseResponseDTO;
+import com.sparta.grimebe.post.dto.PagingParam;
+import com.sparta.grimebe.post.dto.PostListResponseDTO;
 import com.sparta.grimebe.post.dto.PostRequestDTO;
 import com.sparta.grimebe.post.dto.PostResponseDTO;
+import com.sparta.grimebe.post.dto.PostWithLikeDTO;
 import com.sparta.grimebe.post.entity.Post;
 import com.sparta.grimebe.post.exception.PostPermissionException;
 import com.sparta.grimebe.post.exception.PostNotFoundException;
@@ -33,18 +36,27 @@ public class PostService {
     private final ImageStore imageStore;
     private final UserRepository userRepository;
 
-    public PostResponseDTO getPost(Long postId) {
-        Post post = getPostById(postId);
-        PostResponseDTO response = new PostResponseDTO(post);
+    public PostResponseDTO getPost(Long postId, UserDetailsImpl userDetails) {
+        log.info("getPost");
+        PostWithLikeDTO postWithLikeDTO = postRepository.getPost(postId, userDetails.getUser());
+        Post post = postWithLikeDTO.getPost();
+        post.setLiked(postWithLikeDTO.isLiked());
+        PostResponseDTO response = new PostResponseDTO(post, postWithLikeDTO.getLikeCount());
         return response;
     }
 
-    public List<PostResponseDTO> getPosts() {
-        List<Post> allPosts = postRepository.findAll();
-        List<PostResponseDTO> response = allPosts.stream()
-            .map(PostResponseDTO::new)
-            .collect(Collectors.toList());
-        return response;
+    @Transactional(readOnly = true)
+    public Slice<PostListResponseDTO> getPosts(PagingParam pagingParam, UserDetailsImpl userDetails) {
+        log.info("paging Param = {}, {}, {}", pagingParam.getPage(), pagingParam.getSize(), pagingParam.getSort());
+        Pageable pageable = PageRequest.of(pagingParam.getPage(), pagingParam.getSize());
+
+        Slice<PostListResponseDTO> postsList = null;
+        if (pagingParam.getSort().equals("HOT")){
+            postsList = postRepository.getPostListHot(userDetails.getUser(),pageable);
+        } else {
+            postsList = postRepository.getPostListNEWEST(userDetails.getUser(), pageable);
+        }
+        return postsList;
     }
 
     @Transactional
@@ -61,7 +73,7 @@ public class PostService {
             .weather(postRequestDTO.getWeather())
             .build();
         Post savedPost = postRepository.save(post);
-        PostResponseDTO response = new PostResponseDTO(savedPost);
+        PostResponseDTO response = new PostResponseDTO(savedPost, 0L);
         return response;
     }
 
