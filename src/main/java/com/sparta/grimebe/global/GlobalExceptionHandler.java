@@ -1,17 +1,16 @@
 package com.sparta.grimebe.global;
 
+import com.sparta.grimebe.User.dto.UserDuplicationException;
+import com.sparta.grimebe.User.exception.UserNotFoundException;
 import com.sparta.grimebe.comment.exception.CommentNotFoundException;
 import com.sparta.grimebe.comment.exception.NoPermissionException;
+import com.sparta.grimebe.post.exception.PostNotFoundException;
+import com.sparta.grimebe.post.exception.PostPermissionException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.sparta.grimebe.User.exception.UserNotFoundException;
-import com.sparta.grimebe.post.exception.PostNotFoundException;
-import com.sparta.grimebe.post.exception.PostPermissionException;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
@@ -57,6 +56,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponseDTO> noPermissionExceptionHandler(NoPermissionException e) {
         BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(), 403);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    // 사용자 이름 중복
+    @ExceptionHandler(UserDuplicationException.class)
+    public ResponseEntity<BaseResponseDTO> userDuplicationExceptionHandler(UserDuplicationException e){
+        BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(), 400);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
 }
