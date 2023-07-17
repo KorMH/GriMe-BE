@@ -1,5 +1,6 @@
 package com.sparta.grimebe.comment.service;
 
+import com.sparta.grimebe.User.security.UserDetailsImpl;
 import com.sparta.grimebe.comment.dto.CommentRequestDto;
 import com.sparta.grimebe.comment.dto.CommentResponseDto;
 import com.sparta.grimebe.comment.entity.Comment;
@@ -34,31 +35,36 @@ public class CommentService {
     public CommentResponseDto getComment(Long commentId) {
         // commentId에 해당하는 코멘트를 찾고, CommentResponseDto 객체로 변환
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Comment not found with id: " + commentId));
+                .orElseThrow(() -> new CommentNotFoundException("해당 ID의 댓글을 찾을 수 없습니다: " + commentId));
         return new CommentResponseDto(comment);
     }
 
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, String token) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new NoPermissionException("권한이 없습니다."));
-        Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(() -> new NoPermissionException("권한이 없습니다."));
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() -> new NoPermissionException("해당 작업을 수행할 권한이 없습니다."));
+        Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(() -> new NoPermissionException("해당 작업을 수행할 권한이 없습니다."));
         Comment comment = new Comment(requestDto.getContent(), post, user);
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponseDto(savedComment);
     }
 
-    // (이하 코드는 중복되어 생략)
 
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, String token) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글입니다."));
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("댓글이 존재하지 않습니다."));
+        if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new NoPermissionException("해당 작업을 수행할 권한이 없습니다.");
+        }
         comment.updateContent(requestDto.getContent());
         return new CommentResponseDto(comment);
     }
 
     @Transactional
-    public void deleteComment(Long commentId, String token) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글입니다."));
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("댓글이 존재하지 않습니다."));
+        if (!comment.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new NoPermissionException("해당 작업을 수행할 권한이 없습니다.");
+        }
         commentRepository.deleteById(commentId);
     }
 }
