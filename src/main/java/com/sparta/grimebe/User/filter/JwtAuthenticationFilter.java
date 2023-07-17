@@ -7,11 +7,14 @@ import com.sparta.grimebe.User.dto.LoginRequestDto;
 import com.sparta.grimebe.User.entity.UserRoleEnum;
 import com.sparta.grimebe.User.jwt.JwtUtil;
 import com.sparta.grimebe.User.security.UserDetailsImpl;
+import com.sparta.grimebe.global.BaseResponseDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -22,9 +25,10 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    private final ObjectMapper objectMapper;
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, ObjectMapper objectMapper) {
         this.jwtUtil = jwtUtil;
+        this.objectMapper = objectMapper;
         setFilterProcessesUrl("/api/auth/login");
     }
 
@@ -42,6 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     )
             );
         } catch (IOException e) {
+            log.info("로그인 Exception");
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
@@ -55,6 +60,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = jwtUtil.createToken(username, role);
         jwtUtil.addJwtToHeader(token, response);
+        BaseResponseDTO responseBody = new BaseResponseDTO("로그인 성공", HttpStatus.OK.value());
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getWriter(),responseBody);
     }
 
     @Override
