@@ -1,28 +1,36 @@
 package com.sparta.grimebe.post.image;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class ImageStore {
 
     private static final Tika tika = new Tika();
 
-    @Value("${file.dir}")
-    private String fileDir;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
-    public String getPath(String fileName) {
-        return fileDir + fileName;
-    }
+    private final AmazonS3 amazonS3;
+
 
     // IOException 발생 가능한 경우
     // 디스크 관련 문제: 디스크 가득 참, 디스크 권한 문제 또는 디스크 I/O 오류와 같이 디스크에서 파일을 쓰거나 읽는 데 문제가 있는 경우 파일 전송 프로세스 중에 IOException이 발생할 수 있습니다.
@@ -35,26 +43,30 @@ public class ImageStore {
         if (multipartFile.isEmpty()) {
             throw new IllegalArgumentException("File Not Found");
         }
-        if (!isImageFile(multipartFile)){
+        if (!isImageFile(multipartFile)) {
             throw new IllegalArgumentException("Not Image File");
         }
-
         String originalFileName = multipartFile.getOriginalFilename();
         log.info("originalFileName = {}", originalFileName);
-        try {
 
-            String storeFileName = createStoreFileName(originalFileName);
-            File folder = new File(fileDir);
-            // if (!folder.exists()){
-            //     folder.mkdirs();
-            // }
-            multipartFile.transferTo(new File(getPath(storeFileName)));
-            return storeFileName;
+        String storeFileName = createStoreFileName(originalFileName);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        try {
+            // InputStream의 길이를 알려주지 않으면 Warning 발생
+            InputStream inputStream = multipartFile.getInputStream();
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            objectMetadata.setContentLength(bytes.length);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            amazonS3.putObject(new PutObjectRequest(bucket, storeFileName,byteArrayInputStream , objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            log.error("Failed to store {} cause: {}",originalFileName, e);
-            throw new RuntimeException("Failed to store file", e);
+            throw new RuntimeException(e);
         }
+        return amazonS3.getUrl(bucket, storeFileName).toString();
     }
+
 
     private String createStoreFileName(String originalFileName) {
         String ext = extractExt(originalFileName);
@@ -64,18 +76,18 @@ public class ImageStore {
 
     private String extractExt(String originalFileName) {
         int pos = originalFileName.lastIndexOf(".");
-        String ext = originalFileName.substring(pos+1);
+        String ext = originalFileName.substring(pos + 1);
         return ext;
     }
 
     private boolean isImageFile(MultipartFile multipartFile) {
         try {
             String mimeType = tika.detect(multipartFile.getInputStream());
-            if (!mimeType.startsWith("image")){
+            if (!mimeType.startsWith("image")) {
                 return false;
             }
         } catch (IOException e) {
-            throw new RuntimeException("유효하지 않은 파일입니다.", e);
+            throw new IllegalArgumentException("유효하지 않은 파일입니다.", e);
         }
         return true;
     }

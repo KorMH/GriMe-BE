@@ -1,9 +1,14 @@
 package com.sparta.grimebe.post.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sparta.grimebe.User.entity.User;
+import com.sparta.grimebe.comment.entity.Comment;
 import com.sparta.grimebe.global.BaseTimeEntity;
 import com.sparta.grimebe.post.dto.PostRequestDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -11,11 +16,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -39,15 +49,12 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    //TODO Join 해서 들고오기엔 조회가 너무 빈번하다. 고민
-    //
-    // private int likeCount;
-    //
-    // @Transient
-    // private boolean isLiked;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("id DESC ")
+    private List<Comment> commentList = new ArrayList<>();
 
-    // @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    // private List<Comment> commentList = new ArrayList<>();
+    @Transient
+    private boolean isLiked;
 
     @Builder
     private Post(String title, String content, String image, String mood, String weather, User user) {
@@ -64,5 +71,9 @@ public class Post extends BaseTimeEntity {
         this.content = postRequestDTO.getContent();
         this.mood = postRequestDTO.getMood();
         this.weather = postRequestDTO.getWeather();
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

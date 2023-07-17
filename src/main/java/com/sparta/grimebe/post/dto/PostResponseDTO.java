@@ -1,7 +1,10 @@
 package com.sparta.grimebe.post.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.sparta.grimebe.comment.dto.CommentResponseDto;
 import com.sparta.grimebe.post.entity.Post;
 
 import lombok.Getter;
@@ -21,26 +24,29 @@ public class PostResponseDTO {
 
     private String weather;
 
-    private boolean isLiked;
-
     private String username;
 
     private LocalDateTime createdAt;
 
-//    private List<Comment> commentList;
+    private List<CommentResponseDto> commentList;
 
-    public PostResponseDTO(Post post) {
+    private boolean isLiked;
+
+    private Long likeCount;
+
+    public PostResponseDTO(Post post, Long likeCount) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.image = post.getImage();
         this.content = post.getContent();
         this.mood = post.getMood();
-        this.weather = post.getMood();
+        this.weather = post.getWeather();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
+        this.commentList = post.getCommentList().stream()
+            .map(CommentResponseDto::new)
+            .collect(Collectors.toList());
+        this.isLiked = post.isLiked();
+        this.likeCount = likeCount;
     }
-
-    // public void setLiked(boolean liked) {
-    //     isLiked = liked;
-    // }
 }
