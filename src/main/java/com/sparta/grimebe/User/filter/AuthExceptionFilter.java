@@ -2,6 +2,7 @@ package com.sparta.grimebe.User.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.grimebe.User.dto.UserExceptionDto;
+import com.sparta.grimebe.global.BaseResponseDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

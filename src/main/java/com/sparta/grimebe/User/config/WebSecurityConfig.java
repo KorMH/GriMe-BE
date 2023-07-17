@@ -4,6 +4,7 @@ package com.sparta.grimebe.User.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.grimebe.User.filter.AuthExceptionFilter;
 import com.sparta.grimebe.User.filter.JwtAuthenticationFilter;
 import com.sparta.grimebe.User.filter.JwtAuthorizationFilter;
 import com.sparta.grimebe.User.jwt.JwtUtil;
@@ -49,6 +50,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public AuthExceptionFilter authExceptionFilter() {
+        return new AuthExceptionFilter(objectMapper);
+    }
+
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, objectMapper);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
@@ -84,7 +90,7 @@ public class WebSecurityConfig {
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(authExceptionFilter(), JwtAuthenticationFilter.class);
         return http.build();
     }
 }
