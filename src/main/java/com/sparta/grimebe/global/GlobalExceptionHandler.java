@@ -54,10 +54,11 @@ public class GlobalExceptionHandler {
         BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(), 403);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
+
     // 사용자 이름 중복
     @ExceptionHandler(UserDuplicationException.class)
     public ResponseEntity<BaseResponseDTO> userDuplicationExceptionHandler(UserDuplicationException e){
-        BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(), 400);
+        BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(), 409);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
