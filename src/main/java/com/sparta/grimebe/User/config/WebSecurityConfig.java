@@ -1,8 +1,6 @@
 package com.sparta.grimebe.User.config;
 
 
-
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.grimebe.User.filter.AuthExceptionFilter;
 import com.sparta.grimebe.User.filter.JwtAuthenticationFilter;
@@ -29,9 +27,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
-
     private final ObjectMapper objectMapper;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -83,9 +79,6 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
-
-
-
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
