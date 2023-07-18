@@ -6,23 +6,18 @@ import com.sparta.grimebe.post.service.PostService;
 import com.sparta.grimebe.postlike.entity.PostLike;
 import com.sparta.grimebe.postlike.repository.PostLikeRepository;
 import com.sparta.grimebe.User.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
     private final PostService postService;
-
-    @Autowired
-    public PostLikeService(PostLikeRepository postLikeRepository, PostService postService){
-        this.postLikeRepository = postLikeRepository;
-        this.postService = postService;
-    }
 
     // likePost 메서드를 여기로 이동
     @Transactional
