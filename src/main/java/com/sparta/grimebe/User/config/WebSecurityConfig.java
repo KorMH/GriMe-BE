@@ -106,9 +106,10 @@ public class WebSecurityConfig {
         );
 
         // 필터 관리
+        http.addFilterBefore(authExceptionFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(authExceptionFilter(), JwtAuthenticationFilter.class);
+
         return http.build();
     }
 }
