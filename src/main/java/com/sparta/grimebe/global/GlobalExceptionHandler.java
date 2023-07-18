@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<BaseResponseDTO> runtimeExceptionHandler(RuntimeException e){
         log.error(e.getMessage());
-        BaseResponseDTO errorResponse = new BaseResponseDTO("알수없는 문제가 발생하였습니다.",400);
+        BaseResponseDTO errorResponse = new BaseResponseDTO(e.getMessage(),400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
