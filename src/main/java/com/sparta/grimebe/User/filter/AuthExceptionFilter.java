@@ -29,6 +29,7 @@ public class AuthExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request,response);
         } catch (JwtAuthenticationException | NullPointerException | IllegalArgumentException e){
+            log.error("AuthExceptionFilter = {}", e.getMessage());
             handleException(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
