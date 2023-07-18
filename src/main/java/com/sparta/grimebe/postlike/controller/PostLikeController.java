@@ -1,5 +1,8 @@
 package com.sparta.grimebe.postlike.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,10 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     // 게시글 좋아요 메서드
+    @Operation(summary = "좋아요")
+    @ApiResponses(value =
+            { @ApiResponse(responseCode = "200", description = "좋아요 성공/삭제"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PostMapping("/likes")
     public ResponseEntity<Void> likePost(@RequestBody PostLikeRequestDTO postLikeRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postLikeService.likePost(postLikeRequestDTO.getPostId(), userDetails);

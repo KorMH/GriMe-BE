@@ -18,6 +18,8 @@ import com.sparta.grimebe.comment.service.CommentService;
 import com.sparta.grimebe.global.BaseResponseDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -28,12 +30,18 @@ public class CommentController {
 
     @Operation(summary = "댓글 작성")
     @PostMapping("/comments")
+    @ApiResponses(value =
+            { @ApiResponse(responseCode = "200", description = "댓글 작성 성공"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")})
     public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentResponseDto responseDto = commentService.createComment(postId, requestDto, userDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @Operation(summary = "댓글 수정")
+    @ApiResponses(value =
+            { @ApiResponse(responseCode = "200", description = "댓글 수정 성공"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")})
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<BaseResponseDTO> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         BaseResponseDTO response = commentService.updateComment(postId, commentId, requestDto, userDetails);
@@ -41,6 +49,9 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 삭제")
+    @ApiResponses(value =
+            { @ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")})
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<BaseResponseDTO> deleteComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         BaseResponseDTO response = commentService.deleteComment(postId, commentId, userDetails);
