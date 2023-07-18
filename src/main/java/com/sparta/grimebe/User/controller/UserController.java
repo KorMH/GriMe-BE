@@ -1,5 +1,6 @@
 package com.sparta.grimebe.User.controller;
 
+import com.sparta.grimebe.User.dto.LoginRequestDto;
 import com.sparta.grimebe.User.dto.SignupRequestDto;
 import com.sparta.grimebe.User.jwt.JwtUtil;
 import com.sparta.grimebe.User.service.UserService;
@@ -23,7 +24,6 @@ public class UserController {
     // User Signup
     @PostMapping("/signup")
     public ResponseEntity<BaseResponseDTO> signUp(@Valid @RequestBody SignupRequestDto requestDto) {
-
         try {
             userService.signup(requestDto);
         } catch (IllegalArgumentException e) {
@@ -31,5 +31,12 @@ public class UserController {
         }
 
         return ResponseEntity.status(201).body(new BaseResponseDTO("회원가입 성공", HttpStatus.CREATED.value()));
+    }
+    //@PathVariable String username
+    //아이디 중복체크
+    @PostMapping("/checkId")
+    public ResponseEntity<BaseResponseDTO> checkId(@RequestBody String username){
+        BaseResponseDTO response = userService.checkId(username);
+        return ResponseEntity.status(201).body(response);
     }
 }

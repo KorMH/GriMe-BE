@@ -3,7 +3,7 @@ package com.sparta.grimebe.global;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.sparta.grimebe.User.dto.UserDuplicationException;
+import com.sparta.grimebe.User.exception.UserDuplicationException;
 import com.sparta.grimebe.User.exception.UserNotFoundException;
 import com.sparta.grimebe.comment.exception.CommentNotFoundException;
 import com.sparta.grimebe.comment.exception.NoPermissionException;
