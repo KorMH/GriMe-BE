@@ -13,7 +13,7 @@ import com.sparta.grimebe.User.security.UserDetailsImpl;
 import com.sparta.grimebe.postlike.dto.PostLikeRequestDTO;
 import com.sparta.grimebe.postlike.service.PostLikeService;
 
-@RequestMapping("/api")
+@RequestMapping("/api/post/{postId}")
 @RestController
 public class PostLikeController {
 
@@ -25,7 +25,7 @@ public class PostLikeController {
     }
 
     // 게시글 좋아요 메서드
-    @PostMapping("/post/like")
+    @PostMapping("/likes")
     public ResponseEntity<Void> likePost(@RequestBody PostLikeRequestDTO postLikeRequestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postLikeService.likePost(postLikeRequestDTO.getPostId(), userDetails);
         return ResponseEntity.status(HttpStatus.OK).body(null);
