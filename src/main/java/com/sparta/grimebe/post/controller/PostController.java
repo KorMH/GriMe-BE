@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sparta.grimebe.User.security.UserDetailsImpl;
+import com.sparta.grimebe.global.security.UserDetailsImpl;
 import com.sparta.grimebe.global.BaseResponseDTO;
 import com.sparta.grimebe.post.dto.PagingDTO;
 import com.sparta.grimebe.post.dto.PagingParam;

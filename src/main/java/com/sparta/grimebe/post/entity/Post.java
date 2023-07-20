@@ -3,7 +3,7 @@ package com.sparta.grimebe.post.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sparta.grimebe.User.entity.User;
+import com.sparta.grimebe.user.entity.User;
 import com.sparta.grimebe.comment.entity.Comment;
 import com.sparta.grimebe.global.BaseTimeEntity;
 import com.sparta.grimebe.post.dto.PostRequestDTO;

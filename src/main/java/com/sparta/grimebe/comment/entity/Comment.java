@@ -1,6 +1,6 @@
 package com.sparta.grimebe.comment.entity;
 
-import com.sparta.grimebe.User.entity.User;
+import com.sparta.grimebe.user.entity.User;
 import com.sparta.grimebe.post.entity.Post;
 
 import jakarta.persistence.Column;
