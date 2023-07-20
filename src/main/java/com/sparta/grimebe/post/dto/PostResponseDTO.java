@@ -32,9 +32,7 @@ public class PostResponseDTO {
 
     private boolean isLiked;
 
-    private Long likeCount;
-
-    public PostResponseDTO(Post post, Long likeCount) {
+    public PostResponseDTO(Post post, boolean isLiked) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.image = post.getImage();
@@ -46,7 +44,6 @@ public class PostResponseDTO {
         this.commentList = post.getCommentList().stream()
             .map(CommentResponseDto::new)
             .collect(Collectors.toList());
-        this.isLiked = post.isLiked();
-        this.likeCount = likeCount;
+        this.isLiked = isLiked;
     }
 }

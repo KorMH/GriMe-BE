@@ -18,7 +18,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,11 +49,8 @@ public class Post extends BaseTimeEntity {
     private User user;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @OrderBy("id DESC ")
+    @OrderBy("id DESC")
     private List<Comment> commentList = new ArrayList<>();
-
-    @Transient
-    private boolean isLiked;
 
     @Builder
     private Post(String title, String content, String image, String mood, String weather, User user) {
@@ -73,7 +69,7 @@ public class Post extends BaseTimeEntity {
         this.weather = postRequestDTO.getWeather();
     }
 
-    public void setLiked(boolean liked) {
-        isLiked = liked;
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 }
