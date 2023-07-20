@@ -1,7 +1,0 @@
-package com.sparta.grimebe.User.exception;
-
-public class UserDuplicationException extends RuntimeException {
-    public UserDuplicationException(String message) {
-        super(message);
-    }
-}

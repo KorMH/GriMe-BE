@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Getter
 public class PostListResponseDTO {
-    // 게시글의 ID
+
     private Long id;
 
     private String title;

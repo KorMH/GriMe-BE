@@ -7,7 +7,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.sparta.grimebe.User.entity.User;
+import com.sparta.grimebe.user.entity.User;
 import com.sparta.grimebe.post.dto.PostListResponseDTO;
 import com.sparta.grimebe.post.entity.Post;
 

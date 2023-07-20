@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sparta.grimebe.User.security.UserDetailsImpl;
+import com.sparta.grimebe.global.security.UserDetailsImpl;
 import com.sparta.grimebe.comment.dto.CommentRequestDto;
 import com.sparta.grimebe.comment.dto.CommentResponseDto;
 import com.sparta.grimebe.comment.service.CommentService;

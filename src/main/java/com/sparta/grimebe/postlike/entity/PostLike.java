@@ -1,7 +1,7 @@
 package com.sparta.grimebe.postlike.entity;
 
 import com.sparta.grimebe.post.entity.Post;
-import com.sparta.grimebe.User.entity.User;
+import com.sparta.grimebe.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

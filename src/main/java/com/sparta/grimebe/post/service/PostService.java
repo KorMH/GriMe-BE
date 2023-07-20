@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sparta.grimebe.User.entity.User;
-import com.sparta.grimebe.User.entity.UserRoleEnum;
-import com.sparta.grimebe.User.exception.UserNotFoundException;
-import com.sparta.grimebe.User.repository.UserRepository;
-import com.sparta.grimebe.User.security.UserDetailsImpl;
+import com.sparta.grimebe.user.entity.User;
+import com.sparta.grimebe.user.entity.UserRoleEnum;
+import com.sparta.grimebe.user.exception.UserNotFoundException;
+import com.sparta.grimebe.user.repository.UserRepository;
+import com.sparta.grimebe.global.security.UserDetailsImpl;
 import com.sparta.grimebe.comment.entity.Comment;
 import com.sparta.grimebe.comment.repository.CommentRepository;
 import com.sparta.grimebe.global.BaseResponseDTO;
